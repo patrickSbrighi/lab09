@@ -10,12 +10,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -45,6 +45,15 @@ public class BadIOGUI {
         canvas.add(write, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        final JPanel newPanel = new JPanel();
+        newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.X_AXIS));
+        canvas.add(newPanel, BorderLayout.CENTER);
+        newPanel.add(write);
+
+        final JButton read = new JButton("Read a file");
+        newPanel.add(read);
+
         /*
          * Handlers
          */
@@ -65,6 +74,24 @@ public class BadIOGUI {
                     e1.printStackTrace(); // NOPMD: allowed as this is just an exercise
                 }
             }
+        });
+
+        read.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                try{
+                    final BufferedReader br = new BufferedReader(new FileReader(PATH));
+                    String line = null;
+                    while((line = br.readLine()) != null){
+                        System.out.println(line);
+                    }
+                    br.close();
+                } catch(IOException e2){
+                    System.out.println("Error: " + e2.getMessage());
+                }
+            }
+            
         });
     }
 
@@ -91,6 +118,7 @@ public class BadIOGUI {
          * OK, ready to push the frame onscreen
          */
         frame.setVisible(true);
+        frame.pack();
     }
 
     /**
